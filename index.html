@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrámiteFácil</title>
+    <style>
+      :root {
+        --sidebar: #111111;
+        --main-bg: #ffffff;
+        --surface: #ffffff;
+        --muted-surface: #f9fafb;
+        --border: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --subtle: #9ca3af;
+        --accent: #2563eb;
+        --accent-soft: #eff6ff;
+        --success: #16a34a;
+        --success-soft: #dcfce7;
+        --warning: #a16207;
+        --warning-soft: #fef3c7;
+        --sidebar-text: #f9fafb;
+        --sidebar-muted: #a3a3a3;
+        --shadow: 0 1px 2px rgba(17, 24, 39, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        background: var(--main-bg);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        padding: 18px 12px;
+        color: var(--sidebar-text);
+        background: var(--sidebar);
+        border-right: 1px solid #1f1f1f;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 8px;
+        min-height: 36px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+        color: #111111;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 36px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        color: var(--sidebar-muted);
+        text-decoration: none;
+        transition: background 140ms ease, color 140ms ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--sidebar-text);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-icon {
+        width: 16px;
+        color: currentColor;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .content-shell {
+        display: grid;
+        grid-template-rows: 58px minmax(0, 1fr);
+        min-width: 0;
+        background: var(--main-bg);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .search {
+        position: relative;
+        width: min(460px, 100%);
+      }
+
+      .search::before {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        color: var(--subtle);
+        content: "⌕";
+        transform: translateY(-53%);
+      }
+
+      .search input {
+        width: 100%;
+        height: 36px;
+        padding: 0 12px 0 34px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+        background: var(--muted-surface);
+        color: var(--text);
+        box-shadow: var(--shadow);
+      }
+
+      .search input:focus {
+        border-color: #bfdbfe;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .avatar {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--muted-surface);
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      main {
+        padding: 24px;
+        overflow: auto;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .page-title {
+        margin: 0;
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .page-summary {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .count-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--muted-surface);
+        color: var(--muted);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .tramites-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .tramite-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 206px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .card-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .card-icon {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--muted-surface);
+        font-size: 18px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .status-badge.disponible {
+        color: var(--success);
+        background: var(--success-soft);
+      }
+
+      .status-badge.en-revision {
+        color: var(--warning);
+        background: var(--warning-soft);
+      }
+
+      .tramite-name {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+
+      .tramite-meta {
+        display: grid;
+        gap: 6px;
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+
+      .meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .meta-value {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .meta-value.code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 12px;
+      }
+
+      .requirements-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 34px;
+        margin-top: auto;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--text);
+        font-weight: 600;
+        transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+      }
+
+      .requirements-button:hover {
+        border-color: #bfdbfe;
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        background: rgba(17, 24, 39, 0);
+        transition: background 160ms ease;
+      }
+
+      .drawer-backdrop.open {
+        pointer-events: auto;
+        background: rgba(17, 24, 39, 0.28);
+      }
+
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 11;
+        display: flex;
+        flex-direction: column;
+        width: min(320px, 100vw);
+        height: 100vh;
+        border-left: 1px solid var(--border);
+        background: var(--surface);
+        box-shadow: -16px 0 40px rgba(17, 24, 39, 0.14);
+        transform: translateX(100%);
+        transition: transform 180ms ease;
+      }
+
+      .drawer.open {
+        transform: translateX(0);
+      }
+
+      .drawer-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .drawer-title {
+        margin: 4px 0 0;
+        font-size: 18px;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+      }
+
+      .drawer-close {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--muted-surface);
+        color: var(--muted);
+      }
+
+      .drawer-body {
+        display: grid;
+        gap: 18px;
+        padding: 18px;
+        overflow: auto;
+      }
+
+      .drawer-section {
+        display: grid;
+        gap: 10px;
+      }
+
+      .drawer-section h3 {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: -0.01em;
+      }
+
+      .checklist {
+        display: grid;
+        gap: 9px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .checklist label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--text);
+      }
+
+      .checklist input {
+        width: 15px;
+        height: 15px;
+        accent-color: var(--accent);
+      }
+
+      .steps-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text);
+      }
+
+      .location-options {
+        display: grid;
+        gap: 8px;
+      }
+
+      .location-option {
+        display: grid;
+        gap: 3px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--muted-surface);
+      }
+
+      .location-label {
+        font-weight: 650;
+      }
+
+      .location-detail {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .location-detail a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .location-detail a:hover {
+        text-decoration: underline;
+      }
+
+      .drawer-footer {
+        padding: 14px 18px 18px;
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .primary-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 38px;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        background: var(--accent);
+        color: #ffffff;
+        font-weight: 650;
+      }
+
+      .primary-cta:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+      }
+
+      @media (max-width: 720px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          flex-direction: row;
+          align-items: center;
+          gap: 16px;
+          min-width: 0;
+          overflow-x: auto;
+          border-right: 0;
+          border-bottom: 1px solid #1f1f1f;
+        }
+
+        .nav {
+          flex-direction: row;
+          min-width: max-content;
+        }
+
+        .topbar {
+          padding: 0 16px;
+        }
+
+        main {
+          padding: 16px;
+        }
+
+        .page-header {
+          flex-direction: column;
+        }
+
+        .tramites-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (min-width: 721px) and (max-width: 1080px) {
+        .tramites-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegación principal">
+        <div class="brand" aria-label="TrámiteFácil">
+          <span class="brand-mark">TF</span>
+          <span>TrámiteFácil</span>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link active" href="#tramites" aria-current="page">
+            <span class="nav-icon">▦</span>
+            <span>Trámites</span>
+          </a>
+          <a class="nav-link" href="#solicitudes">
+            <span class="nav-icon">◷</span>
+            <span>Mis Solicitudes</span>
+          </a>
+          <a class="nav-link" href="#alertas">
+            <span class="nav-icon">!</span>
+            <span>Alertas</span>
+          </a>
+        </nav>
+      </aside>
+
+      <div class="content-shell">
+        <header class="topbar">
+          <label class="search" aria-label="Buscar en TrámiteFácil">
+            <input type="search" placeholder="Buscar trámites, solicitudes o códigos" />
+          </label>
+          <div class="avatar" aria-label="Usuario">U</div>
+        </header>
+
+        <main>
+          <section class="catalog" aria-labelledby="catalog-title">
+            <div class="page-header">
+              <div>
+                <p class="eyebrow">Módulo activo</p>
+                <h1 class="page-title" id="catalog-title">Catálogo de Trámites</h1>
+                <p class="page-summary">Selecciona un trámite para revisar requisitos antes de iniciar.</p>
+              </div>
+              <span class="count-pill">6 trámites</span>
+            </div>
+
+            <div class="tramites-grid" id="tramites-grid"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside class="drawer" id="requirements-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawer-title">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Requisitos</p>
+          <h2 class="drawer-title" id="drawer-title">Selecciona un trámite</h2>
+        </div>
+        <button class="drawer-close" type="button" id="drawer-close" aria-label="Cerrar panel">×</button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+      <div class="drawer-footer">
+        <button class="primary-cta" type="button">Iniciar solicitud</button>
+      </div>
+    </aside>
+
+    <script>
+      const tramites = [
+        {
+          icon: "🧾",
+          name: "RFC Alta en SAT",
+          institution: "SAT",
+          time: "30 min",
+          status: "Disponible",
+          requirements: ["CURP", "Identificación oficial", "Comprobante domicilio", "Email vigente"],
+          steps: [
+            "Entra al portal SAT",
+            "Llena el formulario",
+            "Sube documentos",
+            "Descarga acuse",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Módulo SAT más cercano — dirección pendiente",
+        },
+        {
+          icon: "🪪",
+          name: "Renovación de INE",
+          institution: "INE",
+          time: "60 min",
+          status: "Disponible",
+          requirements: [
+            "Acta de nacimiento",
+            "Identificación con fotografía",
+            "Comprobante de domicilio",
+            "CURP",
+          ],
+          steps: [
+            "Agenda una cita en el portal INE",
+            "Confirma tus datos personales",
+            "Presenta documentos en módulo",
+            "Recibe comprobante de trámite",
+          ],
+          online: "Portal de citas INE — enlace pendiente",
+          presencial: "Módulo INE asignado — dirección pendiente",
+        },
+        {
+          icon: "🏥",
+          name: "Alta en IMSS (Patrón)",
+          institution: "IMSS",
+          time: "90 min",
+          status: "En revisión",
+          requirements: [
+            "RFC del patrón",
+            "Comprobante de domicilio fiscal",
+            "Identificación oficial",
+            "CURP del representante legal",
+            "Acta constitutiva si aplica",
+          ],
+          steps: [
+            "Reúne datos fiscales del patrón",
+            "Captura la solicitud patronal",
+            "Adjunta documentación legal",
+            "Espera validación del IMSS",
+          ],
+          online: "IMSS Digital — enlace pendiente",
+          presencial: "Subdelegación IMSS correspondiente — dirección pendiente",
+        },
+        {
+          icon: "📄",
+          name: "Constancia de Situación Fiscal",
+          institution: "SAT",
+          time: "15 min",
+          status: "Disponible",
+          requirements: ["RFC", "Contraseña SAT", "e.firma vigente", "Correo electrónico"],
+          steps: [
+            "Ingresa al portal SAT",
+            "Autentícate con contraseña o e.firma",
+            "Genera la constancia",
+            "Descarga el PDF",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Oficina SAT con cita — dirección pendiente",
+        },
+        {
+          icon: "🛂",
+          name: "Cita Pasaporte",
+          institution: "SRE",
+          time: "45 min",
+          status: "Disponible",
+          requirements: [
+            "Acta de nacimiento",
+            "Identificación oficial",
+            "CURP",
+            "Comprobante de pago",
+            "Fotografía si aplica",
+          ],
+          steps: [
+            "Selecciona oficina y horario",
+            "Captura datos del solicitante",
+            "Realiza el pago de derechos",
+            "Asiste a la cita con documentos",
+          ],
+          online: "Portal de citas SRE — enlace pendiente",
+          presencial: "Delegación SRE seleccionada — dirección pendiente",
+        },
+        {
+          icon: "🏠",
+          name: "Cambio de Domicilio Fiscal",
+          institution: "SAT",
+          time: "20 min",
+          status: "Disponible",
+          requirements: [
+            "RFC",
+            "e.firma vigente",
+            "Comprobante de nuevo domicilio",
+            "Identificación oficial",
+          ],
+          steps: [
+            "Accede al portal SAT",
+            "Captura el nuevo domicilio",
+            "Firma la solicitud",
+            "Guarda el acuse de actualización",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Administración desconcentrada SAT — dirección pendiente",
+        },
+      ];
+
+      const navLinks = document.querySelectorAll(".nav-link");
+      const tramitesGrid = document.querySelector("#tramites-grid");
+      const drawer = document.querySelector("#requirements-drawer");
+      const drawerBackdrop = document.querySelector("#drawer-backdrop");
+      const drawerTitle = document.querySelector("#drawer-title");
+      const drawerBody = document.querySelector("#drawer-body");
+      const drawerClose = document.querySelector("#drawer-close");
+
+      const statusClass = (status) => (status === "Disponible" ? "disponible" : "en-revision");
+
+      const renderTramites = () => {
+        tramitesGrid.innerHTML = tramites
+          .map(
+            (tramite, index) => `
+              <article class="tramite-card">
+                <div class="card-topline">
+                  <span class="card-icon" aria-hidden="true">${tramite.icon}</span>
+                  <span class="status-badge ${statusClass(tramite.status)}">${tramite.status}</span>
+                </div>
+                <h2 class="tramite-name">${tramite.name}</h2>
+                <dl class="tramite-meta">
+                  <div class="meta-row">
+                    <dt>Institución</dt>
+                    <dd class="meta-value code">${tramite.institution}</dd>
+                  </div>
+                  <div class="meta-row">
+                    <dt>Tiempo estimado</dt>
+                    <dd class="meta-value">~${tramite.time}</dd>
+                  </div>
+                </dl>
+                <button class="requirements-button" type="button" data-index="${index}">
+                  Ver requisitos
+                </button>
+              </article>
+            `
+          )
+          .join("");
+      };
+
+      const openDrawer = (tramite) => {
+        drawerTitle.textContent = tramite.name;
+        drawerBody.innerHTML = `
+          <section class="drawer-section">
+            <h3>Requisitos</h3>
+            <ul class="checklist">
+              ${tramite.requirements
+                .map(
+                  (requirement) => `
+                    <li>
+                      <label>
+                        <input type="checkbox" />
+                        <span>${requirement}</span>
+                      </label>
+                    </li>
+                  `
+                )
+                .join("")}
+            </ul>
+          </section>
+          <section class="drawer-section">
+            <h3>Pasos</h3>
+            <ol class="steps-list">
+              ${tramite.steps.map((step) => `<li>${step}</li>`).join("")}
+            </ol>
+          </section>
+          <section class="drawer-section">
+            <h3>Dónde hacerlo</h3>
+            <div class="location-options">
+              <div class="location-option">
+                <span class="location-label">En línea</span>
+                <span class="location-detail"><a href="#" aria-label="Abrir enlace en línea para ${tramite.name}">${tramite.online}</a></span>
+              </div>
+              <div class="location-option">
+                <span class="location-label">Presencial</span>
+                <span class="location-detail">${tramite.presencial}</span>
+              </div>
+            </div>
+          </section>
+        `;
+        drawerBackdrop.hidden = false;
+        requestAnimationFrame(() => {
+          drawer.classList.add("open");
+          drawerBackdrop.classList.add("open");
+          drawer.setAttribute("aria-hidden", "false");
+          drawerClose.focus();
+        });
+      };
+
+      const closeDrawer = () => {
+        drawer.classList.remove("open");
+        drawerBackdrop.classList.remove("open");
+        drawer.setAttribute("aria-hidden", "true");
+        window.setTimeout(() => {
+          if (!drawer.classList.contains("open")) {
+            drawerBackdrop.hidden = true;
+          }
+        }, 180);
+      };
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.forEach((item) => {
+            item.classList.remove("active");
+            item.removeAttribute("aria-current");
+          });
+
+          link.classList.add("active");
+          link.setAttribute("aria-current", "page");
+        });
+      });
+
+      tramitesGrid.addEventListener("click", (event) => {
+        const button = event.target.closest(".requirements-button");
+
+        if (!button) {
+          return;
+        }
+
+        openDrawer(tramites[button.dataset.index]);
+      });
+
+      drawerClose.addEventListener("click", closeDrawer);
+      drawerBackdrop.addEventListener("click", closeDrawer);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeDrawer();
+        }
+      });
+
+      renderTramites();
+    </script>
+  </body>
+</html>
