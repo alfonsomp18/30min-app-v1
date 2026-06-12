@@ -361,7 +361,7 @@
         z-index: 11;
         display: flex;
         flex-direction: column;
-        width: min(420px, 100vw);
+        width: min(320px, 100vw);
         height: 100vh;
         border-left: 1px solid var(--border);
         background: var(--surface);
@@ -404,28 +404,104 @@
       .drawer-body {
         display: grid;
         gap: 18px;
-        padding: 20px;
+        padding: 18px;
         overflow: auto;
       }
 
       .drawer-section {
-        padding: 14px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .drawer-section h3 {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: -0.01em;
+      }
+
+      .checklist {
+        display: grid;
+        gap: 9px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .checklist label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--text);
+      }
+
+      .checklist input {
+        width: 15px;
+        height: 15px;
+        accent-color: var(--accent);
+      }
+
+      .steps-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text);
+      }
+
+      .location-options {
+        display: grid;
+        gap: 8px;
+      }
+
+      .location-option {
+        display: grid;
+        gap: 3px;
+        padding: 10px;
         border: 1px solid var(--border);
         border-radius: 10px;
         background: var(--muted-surface);
       }
 
-      .drawer-section h3 {
-        margin: 0 0 10px;
+      .location-label {
+        font-weight: 650;
+      }
+
+      .location-detail {
+        color: var(--muted);
         font-size: 13px;
       }
 
-      .requirements-list {
-        display: grid;
-        gap: 8px;
-        margin: 0;
-        padding-left: 18px;
-        color: var(--muted);
+      .location-detail a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .location-detail a:hover {
+        text-decoration: underline;
+      }
+
+      .drawer-footer {
+        padding: 14px 18px 18px;
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .primary-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 38px;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        background: var(--accent);
+        color: #ffffff;
+        font-weight: 650;
+      }
+
+      .primary-cta:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
       }
 
       @media (max-width: 720px) {
@@ -534,6 +610,9 @@
         <button class="drawer-close" type="button" id="drawer-close" aria-label="Cerrar panel">×</button>
       </div>
       <div class="drawer-body" id="drawer-body"></div>
+      <div class="drawer-footer">
+        <button class="primary-cta" type="button">Iniciar solicitud</button>
+      </div>
     </aside>
 
     <script>
@@ -544,6 +623,15 @@
           institution: "SAT",
           time: "30 min",
           status: "Disponible",
+          requirements: ["CURP", "Identificación oficial", "Comprobante domicilio", "Email vigente"],
+          steps: [
+            "Entra al portal SAT",
+            "Llena el formulario",
+            "Sube documentos",
+            "Descarga acuse",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Módulo SAT más cercano — dirección pendiente",
         },
         {
           icon: "🪪",
@@ -551,6 +639,20 @@
           institution: "INE",
           time: "60 min",
           status: "Disponible",
+          requirements: [
+            "Acta de nacimiento",
+            "Identificación con fotografía",
+            "Comprobante de domicilio",
+            "CURP",
+          ],
+          steps: [
+            "Agenda una cita en el portal INE",
+            "Confirma tus datos personales",
+            "Presenta documentos en módulo",
+            "Recibe comprobante de trámite",
+          ],
+          online: "Portal de citas INE — enlace pendiente",
+          presencial: "Módulo INE asignado — dirección pendiente",
         },
         {
           icon: "🏥",
@@ -558,6 +660,21 @@
           institution: "IMSS",
           time: "90 min",
           status: "En revisión",
+          requirements: [
+            "RFC del patrón",
+            "Comprobante de domicilio fiscal",
+            "Identificación oficial",
+            "CURP del representante legal",
+            "Acta constitutiva si aplica",
+          ],
+          steps: [
+            "Reúne datos fiscales del patrón",
+            "Captura la solicitud patronal",
+            "Adjunta documentación legal",
+            "Espera validación del IMSS",
+          ],
+          online: "IMSS Digital — enlace pendiente",
+          presencial: "Subdelegación IMSS correspondiente — dirección pendiente",
         },
         {
           icon: "📄",
@@ -565,6 +682,15 @@
           institution: "SAT",
           time: "15 min",
           status: "Disponible",
+          requirements: ["RFC", "Contraseña SAT", "e.firma vigente", "Correo electrónico"],
+          steps: [
+            "Ingresa al portal SAT",
+            "Autentícate con contraseña o e.firma",
+            "Genera la constancia",
+            "Descarga el PDF",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Oficina SAT con cita — dirección pendiente",
         },
         {
           icon: "🛂",
@@ -572,6 +698,21 @@
           institution: "SRE",
           time: "45 min",
           status: "Disponible",
+          requirements: [
+            "Acta de nacimiento",
+            "Identificación oficial",
+            "CURP",
+            "Comprobante de pago",
+            "Fotografía si aplica",
+          ],
+          steps: [
+            "Selecciona oficina y horario",
+            "Captura datos del solicitante",
+            "Realiza el pago de derechos",
+            "Asiste a la cita con documentos",
+          ],
+          online: "Portal de citas SRE — enlace pendiente",
+          presencial: "Delegación SRE seleccionada — dirección pendiente",
         },
         {
           icon: "🏠",
@@ -579,6 +720,20 @@
           institution: "SAT",
           time: "20 min",
           status: "Disponible",
+          requirements: [
+            "RFC",
+            "e.firma vigente",
+            "Comprobante de nuevo domicilio",
+            "Identificación oficial",
+          ],
+          steps: [
+            "Accede al portal SAT",
+            "Captura el nuevo domicilio",
+            "Firma la solicitud",
+            "Guarda el acuse de actualización",
+          ],
+          online: "Portal SAT — enlace pendiente",
+          presencial: "Administración desconcentrada SAT — dirección pendiente",
         },
       ];
 
@@ -625,30 +780,40 @@
         drawerTitle.textContent = tramite.name;
         drawerBody.innerHTML = `
           <section class="drawer-section">
-            <h3>Resumen</h3>
-            <dl class="tramite-meta">
-              <div class="meta-row">
-                <dt>Institución</dt>
-                <dd class="meta-value code">${tramite.institution}</dd>
-              </div>
-              <div class="meta-row">
-                <dt>Tiempo estimado</dt>
-                <dd class="meta-value">~${tramite.time}</dd>
-              </div>
-              <div class="meta-row">
-                <dt>Estatus</dt>
-                <dd><span class="status-badge ${statusClass(tramite.status)}">${tramite.status}</span></dd>
-              </div>
-            </dl>
+            <h3>Requisitos</h3>
+            <ul class="checklist">
+              ${tramite.requirements
+                .map(
+                  (requirement) => `
+                    <li>
+                      <label>
+                        <input type="checkbox" />
+                        <span>${requirement}</span>
+                      </label>
+                    </li>
+                  `
+                )
+                .join("")}
+            </ul>
           </section>
           <section class="drawer-section">
-            <h3>Documentos requeridos</h3>
-            <ul class="requirements-list">
-              <li>Identificación oficial vigente.</li>
-              <li>CURP o comprobante fiscal asociado al solicitante.</li>
-              <li>Comprobante de domicilio no mayor a 3 meses.</li>
-              <li>Correo electrónico y teléfono de contacto.</li>
-            </ul>
+            <h3>Pasos</h3>
+            <ol class="steps-list">
+              ${tramite.steps.map((step) => `<li>${step}</li>`).join("")}
+            </ol>
+          </section>
+          <section class="drawer-section">
+            <h3>Dónde hacerlo</h3>
+            <div class="location-options">
+              <div class="location-option">
+                <span class="location-label">En línea</span>
+                <span class="location-detail"><a href="#" aria-label="Abrir enlace en línea para ${tramite.name}">${tramite.online}</a></span>
+              </div>
+              <div class="location-option">
+                <span class="location-label">Presencial</span>
+                <span class="location-detail">${tramite.presencial}</span>
+              </div>
+            </div>
           </section>
         `;
         drawerBackdrop.hidden = false;
