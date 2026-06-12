@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrámiteFácil</title>
+    <style>
+      :root {
+        --sidebar: #111111;
+        --main-bg: #ffffff;
+        --surface: #ffffff;
+        --muted-surface: #f9fafb;
+        --border: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --subtle: #9ca3af;
+        --accent: #2563eb;
+        --accent-soft: #eff6ff;
+        --sidebar-text: #f9fafb;
+        --sidebar-muted: #a3a3a3;
+        --shadow: 0 1px 2px rgba(17, 24, 39, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        background: var(--main-bg);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        padding: 18px 12px;
+        color: var(--sidebar-text);
+        background: var(--sidebar);
+        border-right: 1px solid #1f1f1f;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 8px;
+        min-height: 36px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+        color: #111111;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 36px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        color: var(--sidebar-muted);
+        text-decoration: none;
+        transition: background 140ms ease, color 140ms ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--sidebar-text);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-icon {
+        width: 16px;
+        color: currentColor;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .content-shell {
+        display: grid;
+        grid-template-rows: 58px minmax(0, 1fr);
+        min-width: 0;
+        background: var(--main-bg);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .search {
+        position: relative;
+        width: min(460px, 100%);
+      }
+
+      .search::before {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        color: var(--subtle);
+        content: "⌕";
+        transform: translateY(-53%);
+      }
+
+      .search input {
+        width: 100%;
+        height: 36px;
+        padding: 0 12px 0 34px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+        background: var(--muted-surface);
+        color: var(--text);
+        box-shadow: var(--shadow);
+      }
+
+      .search input:focus {
+        border-color: #bfdbfe;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .avatar {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--muted-surface);
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      main {
+        padding: 24px;
+        overflow: auto;
+      }
+
+      .placeholder-card {
+        display: grid;
+        place-items: center;
+        min-height: 280px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .placeholder-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .placeholder-code {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--muted-surface);
+        color: var(--muted);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 12px;
+      }
+
+      .placeholder-title {
+        margin: 0;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      @media (max-width: 720px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          flex-direction: row;
+          align-items: center;
+          gap: 16px;
+          min-width: 0;
+          overflow-x: auto;
+          border-right: 0;
+          border-bottom: 1px solid #1f1f1f;
+        }
+
+        .nav {
+          flex-direction: row;
+          min-width: max-content;
+        }
+
+        .topbar {
+          padding: 0 16px;
+        }
+
+        main {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegación principal">
+        <div class="brand" aria-label="TrámiteFácil">
+          <span class="brand-mark">TF</span>
+          <span>TrámiteFácil</span>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link active" href="#tramites" aria-current="page">
+            <span class="nav-icon">▦</span>
+            <span>Trámites</span>
+          </a>
+          <a class="nav-link" href="#solicitudes">
+            <span class="nav-icon">◷</span>
+            <span>Mis Solicitudes</span>
+          </a>
+          <a class="nav-link" href="#alertas">
+            <span class="nav-icon">!</span>
+            <span>Alertas</span>
+          </a>
+        </nav>
+      </aside>
+
+      <div class="content-shell">
+        <header class="topbar">
+          <label class="search" aria-label="Buscar en TrámiteFácil">
+            <input type="search" placeholder="Buscar trámites, solicitudes o códigos" />
+          </label>
+          <div class="avatar" aria-label="Usuario">U</div>
+        </header>
+
+        <main>
+          <section class="placeholder-card" aria-labelledby="placeholder-title">
+            <div class="placeholder-content">
+              <span class="placeholder-code">MOD-000</span>
+              <h1 class="placeholder-title" id="placeholder-title">Selecciona un módulo</h1>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.forEach((item) => {
+            item.classList.remove("active");
+            item.removeAttribute("aria-current");
+          });
+
+          link.classList.add("active");
+          link.setAttribute("aria-current", "page");
+        });
+      });
+    </script>
+  </body>
+</html>
