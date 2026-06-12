@@ -16,6 +16,10 @@
         --subtle: #9ca3af;
         --accent: #2563eb;
         --accent-soft: #eff6ff;
+        --success: #16a34a;
+        --success-soft: #dcfce7;
+        --warning: #a16207;
+        --warning-soft: #fef3c7;
         --sidebar-text: #f9fafb;
         --sidebar-muted: #a3a3a3;
         --shadow: 0 1px 2px rgba(17, 24, 39, 0.05);
@@ -39,6 +43,10 @@
       button,
       input {
         font: inherit;
+      }
+
+      button {
+        cursor: pointer;
       }
 
       .app-shell {
@@ -178,44 +186,246 @@
         overflow: auto;
       }
 
-      .placeholder-card {
+      .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .page-title {
+        margin: 0;
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .page-summary {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .count-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--muted-surface);
+        color: var(--muted);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .tramites-grid {
         display: grid;
-        place-items: center;
-        min-height: 280px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .tramite-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 206px;
+        padding: 16px;
         border: 1px solid var(--border);
         border-radius: 12px;
         background: var(--surface);
         box-shadow: var(--shadow);
       }
 
-      .placeholder-content {
+      .card-topline {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        color: var(--muted);
-        text-align: center;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
       }
 
-      .placeholder-code {
+      .card-icon {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--muted-surface);
+        font-size: 18px;
+      }
+
+      .status-badge {
         display: inline-flex;
         align-items: center;
         height: 24px;
         padding: 0 8px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: var(--muted-surface);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .status-badge.disponible {
+        color: var(--success);
+        background: var(--success-soft);
+      }
+
+      .status-badge.en-revision {
+        color: var(--warning);
+        background: var(--warning-soft);
+      }
+
+      .tramite-name {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+
+      .tramite-meta {
+        display: grid;
+        gap: 6px;
+        margin: 0 0 16px;
         color: var(--muted);
+      }
+
+      .meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .meta-value {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .meta-value.code {
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
         font-size: 12px;
       }
 
-      .placeholder-title {
-        margin: 0;
+      .requirements-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 34px;
+        margin-top: auto;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #ffffff;
         color: var(--text);
-        font-size: 16px;
         font-weight: 600;
-        letter-spacing: -0.01em;
+        transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+      }
+
+      .requirements-button:hover {
+        border-color: #bfdbfe;
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        background: rgba(17, 24, 39, 0);
+        transition: background 160ms ease;
+      }
+
+      .drawer-backdrop.open {
+        pointer-events: auto;
+        background: rgba(17, 24, 39, 0.28);
+      }
+
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 11;
+        display: flex;
+        flex-direction: column;
+        width: min(420px, 100vw);
+        height: 100vh;
+        border-left: 1px solid var(--border);
+        background: var(--surface);
+        box-shadow: -16px 0 40px rgba(17, 24, 39, 0.14);
+        transform: translateX(100%);
+        transition: transform 180ms ease;
+      }
+
+      .drawer.open {
+        transform: translateX(0);
+      }
+
+      .drawer-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .drawer-title {
+        margin: 4px 0 0;
+        font-size: 18px;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+      }
+
+      .drawer-close {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--muted-surface);
+        color: var(--muted);
+      }
+
+      .drawer-body {
+        display: grid;
+        gap: 18px;
+        padding: 20px;
+        overflow: auto;
+      }
+
+      .drawer-section {
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--muted-surface);
+      }
+
+      .drawer-section h3 {
+        margin: 0 0 10px;
+        font-size: 13px;
+      }
+
+      .requirements-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
       }
 
       @media (max-width: 720px) {
@@ -247,6 +457,20 @@
 
         main {
           padding: 16px;
+        }
+
+        .page-header {
+          flex-direction: column;
+        }
+
+        .tramites-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (min-width: 721px) and (max-width: 1080px) {
+        .tramites-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
     </style>
@@ -284,18 +508,168 @@
         </header>
 
         <main>
-          <section class="placeholder-card" aria-labelledby="placeholder-title">
-            <div class="placeholder-content">
-              <span class="placeholder-code">MOD-000</span>
-              <h1 class="placeholder-title" id="placeholder-title">Selecciona un módulo</h1>
+          <section class="catalog" aria-labelledby="catalog-title">
+            <div class="page-header">
+              <div>
+                <p class="eyebrow">Módulo activo</p>
+                <h1 class="page-title" id="catalog-title">Catálogo de Trámites</h1>
+                <p class="page-summary">Selecciona un trámite para revisar requisitos antes de iniciar.</p>
+              </div>
+              <span class="count-pill">6 trámites</span>
             </div>
+
+            <div class="tramites-grid" id="tramites-grid"></div>
           </section>
         </main>
       </div>
     </div>
 
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside class="drawer" id="requirements-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawer-title">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Requisitos</p>
+          <h2 class="drawer-title" id="drawer-title">Selecciona un trámite</h2>
+        </div>
+        <button class="drawer-close" type="button" id="drawer-close" aria-label="Cerrar panel">×</button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+    </aside>
+
     <script>
+      const tramites = [
+        {
+          icon: "🧾",
+          name: "RFC Alta en SAT",
+          institution: "SAT",
+          time: "30 min",
+          status: "Disponible",
+        },
+        {
+          icon: "🪪",
+          name: "Renovación de INE",
+          institution: "INE",
+          time: "60 min",
+          status: "Disponible",
+        },
+        {
+          icon: "🏥",
+          name: "Alta en IMSS (Patrón)",
+          institution: "IMSS",
+          time: "90 min",
+          status: "En revisión",
+        },
+        {
+          icon: "📄",
+          name: "Constancia de Situación Fiscal",
+          institution: "SAT",
+          time: "15 min",
+          status: "Disponible",
+        },
+        {
+          icon: "🛂",
+          name: "Cita Pasaporte",
+          institution: "SRE",
+          time: "45 min",
+          status: "Disponible",
+        },
+        {
+          icon: "🏠",
+          name: "Cambio de Domicilio Fiscal",
+          institution: "SAT",
+          time: "20 min",
+          status: "Disponible",
+        },
+      ];
+
       const navLinks = document.querySelectorAll(".nav-link");
+      const tramitesGrid = document.querySelector("#tramites-grid");
+      const drawer = document.querySelector("#requirements-drawer");
+      const drawerBackdrop = document.querySelector("#drawer-backdrop");
+      const drawerTitle = document.querySelector("#drawer-title");
+      const drawerBody = document.querySelector("#drawer-body");
+      const drawerClose = document.querySelector("#drawer-close");
+
+      const statusClass = (status) => (status === "Disponible" ? "disponible" : "en-revision");
+
+      const renderTramites = () => {
+        tramitesGrid.innerHTML = tramites
+          .map(
+            (tramite, index) => `
+              <article class="tramite-card">
+                <div class="card-topline">
+                  <span class="card-icon" aria-hidden="true">${tramite.icon}</span>
+                  <span class="status-badge ${statusClass(tramite.status)}">${tramite.status}</span>
+                </div>
+                <h2 class="tramite-name">${tramite.name}</h2>
+                <dl class="tramite-meta">
+                  <div class="meta-row">
+                    <dt>Institución</dt>
+                    <dd class="meta-value code">${tramite.institution}</dd>
+                  </div>
+                  <div class="meta-row">
+                    <dt>Tiempo estimado</dt>
+                    <dd class="meta-value">~${tramite.time}</dd>
+                  </div>
+                </dl>
+                <button class="requirements-button" type="button" data-index="${index}">
+                  Ver requisitos
+                </button>
+              </article>
+            `
+          )
+          .join("");
+      };
+
+      const openDrawer = (tramite) => {
+        drawerTitle.textContent = tramite.name;
+        drawerBody.innerHTML = `
+          <section class="drawer-section">
+            <h3>Resumen</h3>
+            <dl class="tramite-meta">
+              <div class="meta-row">
+                <dt>Institución</dt>
+                <dd class="meta-value code">${tramite.institution}</dd>
+              </div>
+              <div class="meta-row">
+                <dt>Tiempo estimado</dt>
+                <dd class="meta-value">~${tramite.time}</dd>
+              </div>
+              <div class="meta-row">
+                <dt>Estatus</dt>
+                <dd><span class="status-badge ${statusClass(tramite.status)}">${tramite.status}</span></dd>
+              </div>
+            </dl>
+          </section>
+          <section class="drawer-section">
+            <h3>Documentos requeridos</h3>
+            <ul class="requirements-list">
+              <li>Identificación oficial vigente.</li>
+              <li>CURP o comprobante fiscal asociado al solicitante.</li>
+              <li>Comprobante de domicilio no mayor a 3 meses.</li>
+              <li>Correo electrónico y teléfono de contacto.</li>
+            </ul>
+          </section>
+        `;
+        drawerBackdrop.hidden = false;
+        requestAnimationFrame(() => {
+          drawer.classList.add("open");
+          drawerBackdrop.classList.add("open");
+          drawer.setAttribute("aria-hidden", "false");
+          drawerClose.focus();
+        });
+      };
+
+      const closeDrawer = () => {
+        drawer.classList.remove("open");
+        drawerBackdrop.classList.remove("open");
+        drawer.setAttribute("aria-hidden", "true");
+        window.setTimeout(() => {
+          if (!drawer.classList.contains("open")) {
+            drawerBackdrop.hidden = true;
+          }
+        }, 180);
+      };
 
       navLinks.forEach((link) => {
         link.addEventListener("click", () => {
@@ -308,6 +682,26 @@
           link.setAttribute("aria-current", "page");
         });
       });
+
+      tramitesGrid.addEventListener("click", (event) => {
+        const button = event.target.closest(".requirements-button");
+
+        if (!button) {
+          return;
+        }
+
+        openDrawer(tramites[button.dataset.index]);
+      });
+
+      drawerClose.addEventListener("click", closeDrawer);
+      drawerBackdrop.addEventListener("click", closeDrawer);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeDrawer();
+        }
+      });
+
+      renderTramites();
     </script>
   </body>
 </html>
